@@ -24,18 +24,23 @@ except ImportError as e:
 
 def get_gpt2_response(prompt):
     try:
-        # Tokenize the input prompt
+        # Tokenize the input prompt with truncation to fit model constraints
         inputs = tokenizer(prompt, return_tensors="pt", max_length=1024, truncation=True)
-        # Generate text using the model with a high max_new_tokens value
+        # Generate text using the model
         outputs = model.generate(
             **inputs,
-            max_new_tokens=1000,  # Adjust this value as needed
-            num_return_sequences=1
+            max_length=1500,  # Increase this as needed but be mindful of memory
+            num_return_sequences=1,
+            pad_token_id=tokenizer.eos_token_id
         )
         # Decode the generated text
         return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    except IndexError as e:
+        return f"An index error occurred: {str(e)}"
     except ValueError as e:
-        return f"An error occurred: {str(e)}"
+        return f"A value error occurred: {str(e)}"
+    except Exception as e:
+        return f"An unexpected error occurred: {str(e)}"
 
 def input_pdf_text(uploaded_file):
     reader = pdf.PdfReader(uploaded_file)
