@@ -6,10 +6,14 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Load the GPT-2 model and tokenizer
-model_name = "gpt2-xl"  # You can use a free model like "gpt2" if "gpt2-xl" is not suitable
-model = GPT2LMHeadModel.from_pretrained(model_name)
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+# Load the GPT-2 model and tokenizer (using the smaller, free model)
+model_name = "gpt2"  # Use a free model if "gpt2-xl" causes issues
+try:
+    model = GPT2LMHeadModel.from_pretrained(model_name)
+    tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+except ImportError as e:
+    st.error(f"An import error occurred: {e}")
+    st.stop()
 
 def get_huggingface_response(prompt):
     try:
