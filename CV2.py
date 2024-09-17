@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Load the model and tokenizer
-model_name = "gpt2"
+# Load the larger GPT2 model (gpt2-xl) and tokenizer
+model_name = "gpt2-xl"  # Larger version of GPT-2
 model = GPT2LMHeadModel.from_pretrained(model_name)
 tokenizer = GPT2Tokenizer.from_pretrained(model_name)
 
