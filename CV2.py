@@ -2,12 +2,19 @@ import streamlit as st
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import PyPDF2 as pdf
 from dotenv import load_dotenv
+import torch
 
 # Load environment variables
 load_dotenv()
 
 # Load the GPT-2 model and tokenizer (using the smaller, free model)
 model_name = "gpt2"  # Use a free model if "gpt2-xl" causes issues
+
+# Ensure PyTorch is available
+if not torch.cuda.is_available() and torch.version.__version__ == '':
+    st.error("PyTorch is not installed or not correctly set up. Please install PyTorch and restart the runtime.")
+    st.stop()
+
 try:
     model = GPT2LMHeadModel.from_pretrained(model_name)
     tokenizer = GPT2Tokenizer.from_pretrained(model_name)
@@ -15,7 +22,7 @@ except ImportError as e:
     st.error(f"An import error occurred: {e}")
     st.stop()
 
-def get_huggingface_response(prompt):
+def get_gpt2_response(prompt):
     try:
         # Tokenize the input prompt
         inputs = tokenizer(prompt, return_tensors="pt", max_length=1024, truncation=True)
@@ -75,9 +82,9 @@ if st.button("Soumettre"):
         with st.spinner('Traitement en cours...'):
             # Read and process PDF
             text = input_pdf_text(uploaded_file)
-            # Generate response from Hugging Face model
+            # Generate response from GPT-2 model
             prompt = input_prompt_ats.format(text=text, jd=jd)
-            response = get_huggingface_response(prompt)
+            response = get_gpt2_response(prompt)
             st.subheader(response)
     else:
         st.warning("Veuillez télécharger un CV au format PDF.")
