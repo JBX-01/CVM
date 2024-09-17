@@ -1,17 +1,26 @@
 import streamlit as st
-from transformers import pipeline
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import PyPDF2 as pdf
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-# Initialize Hugging Face pipeline
-generator = pipeline("text-generation", model="gpt2")  # You can choose another model if needed
+# Load the model and tokenizer
+model_name = "gpt2"
+model = GPT2LMHeadModel.from_pretrained(model_name)
+tokenizer = GPT2Tokenizer.from_pretrained(model_name)
 
 def get_huggingface_response(prompt):
-    response = generator(prompt, max_length=1500, num_return_sequences=1)
-    return response[0]['generated_text']
+    try:
+        # Tokenize the input prompt
+        inputs = tokenizer(prompt, return_tensors="pt", max_length=1024, truncation=True)
+        # Generate text using the model
+        outputs = model.generate(**inputs, max_length=1024, num_return_sequences=1)
+        # Decode the generated text
+        return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    except ValueError as e:
+        return f"An error occurred: {str(e)}"
 
 def input_pdf_text(uploaded_file):
     reader = pdf.PdfReader(uploaded_file)
