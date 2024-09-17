@@ -1,5 +1,4 @@
-Streamlit
+streamlit
 transformers
-torch
 PyPDF2
 python-dotenv
