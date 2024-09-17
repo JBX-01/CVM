@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Load the larger GPT2 model (gpt2-xl) and tokenizer
-model_name = "gpt2-xl"  # Larger version of GPT-2
+# Load the GPT-2 model and tokenizer
+model_name = "gpt2-xl"  # You can use a free model like "gpt2" if "gpt2-xl" is not suitable
 model = GPT2LMHeadModel.from_pretrained(model_name)
 tokenizer = GPT2Tokenizer.from_pretrained(model_name)
 
@@ -71,7 +71,7 @@ if st.button("Soumettre"):
         with st.spinner('Traitement en cours...'):
             # Read and process PDF
             text = input_pdf_text(uploaded_file)
-            # Generate response from API
+            # Generate response from Hugging Face model
             prompt = input_prompt_ats.format(text=text, jd=jd)
             response = get_huggingface_response(prompt)
             st.subheader(response)
