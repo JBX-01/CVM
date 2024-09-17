@@ -1,5 +1,5 @@
-streamlit
-google-generativeai
-python-dotenv
+Streamlit
+transformers
+torch
 PyPDF2
-language-tool-python
+python-dotenv
